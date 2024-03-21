@@ -37,3 +37,14 @@ export let deleteAccount = async (
     next(error);
   }
 };
+export let update = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { user } = req as any;
+    const { body } = req;
+    await redisDB.hmset(user.email, body);
+
+    res.json({ message: "Updated user successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
