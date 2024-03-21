@@ -40,9 +40,42 @@ export let register = async (
 };
 export let logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log((req as any).user);
     res.clearCookie("token");
     res.json({ message: "logout successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+export let login = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+
+    const existingUser = await redisDB.hgetall(email);
+
+    if (!Object.entries(existingUser).length) {
+      throw httpErrors.BadRequest("User not found");
+    }
+
+    if (existingUser) {
+      const comparePassword = bcrypt.compareSync(
+        password,
+        existingUser.password
+      );
+
+      if (!comparePassword)
+        throw httpErrors.BadRequest("Email or password is not valid");
+    }
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET as string, {
+      expiresIn: "10d",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+    });
+
+    res.json({ message: "login successfully" });
   } catch (error) {
     next(error);
   }
