@@ -1,8 +1,8 @@
 import express from "express";
 import "./configs/db";
 import authRoutes from "./auth/auth.route";
-import errorMiddlewares from "./middlewares/error";
-import notFoundMiddlewares from "./middlewares/notFound";
+import errorMiddlewares from "./middlewares/error.middleware";
+import notFoundMiddlewares from "./middlewares/notFound.middleware";
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 dotenv.config()
