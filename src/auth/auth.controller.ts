@@ -38,4 +38,12 @@ export let register = async (
     next(error);
   }
 };
-
+export let logout = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    console.log((req as any).user);
+    res.clearCookie("token");
+    res.json({ message: "logout successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
